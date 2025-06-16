@@ -1,0 +1,47 @@
+# Pre-commit configuration for AnalysisToolkit
+# See https://pre-commit.com for more information
+
+repos:
+  # 通用代码质量检查
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Remove trailing whitespace
+      - id: end-of-file-fixer
+        name: Fix end of files
+      - id: check-yaml
+        name: Check YAML syntax
+      - id: check-json
+        name: Check JSON syntax
+      - id: check-merge-conflict
+        name: Check merge conflict markers
+      - id: check-added-large-files
+        name: Check for large files
+        args: ['--maxkb=1000']
+      - id: mixed-line-ending
+        name: Check mixed line ending
+        args: ['--fix=lf']
+
+  # C++ 代码格式化
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v20.1.6
+    hooks:
+      - id: clang-format
+        name: C++ code formatting
+        types_or: [c++, c, cuda]
+        files: \.(cpp|cc|c\+\+|cxx|c|h|hpp|hh|h\+\+|hxx|cu)$
+        args: ['-i']  # 就地修改文件
+
+  # CMake 文件格式化（可选）
+  - repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
+    hooks:
+      - id: cmake-format
+        name: CMake file formatting
+        files: (CMakeLists\.txt|\.cmake)$
+        args: ['-i']
+
+# 全局配置
+default_stages: [pre-commit]
+fail_fast: false

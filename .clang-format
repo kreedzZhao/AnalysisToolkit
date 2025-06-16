@@ -1,0 +1,94 @@
+# clang-format configuration for AnalysisToolkit
+# Based on Google style with some customizations
+
+BasedOnStyle: Google
+
+# 基本设置
+Language: Cpp
+Standard: c++20
+
+# 缩进设置
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+
+# 大括号换行设置
+BreakBeforeBraces: Attach
+Cpp11BracedListStyle: true
+
+# 行长度设置
+ColumnLimit: 100
+
+# 访问修饰符缩进
+AccessModifierOffset: -2
+
+# 指针和引用对齐
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# 函数参数设置
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
+BinPackParameters: false
+BinPackArguments: false
+
+# 命名空间设置
+NamespaceIndentation: None
+FixNamespaceComments: true
+
+# 包含头文件排序
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '^<.*\.h>'
+    Priority:        1
+  - Regex:           '^<.*'
+    Priority:        2
+  - Regex:           '.*'
+    Priority:        3
+
+# 空行设置
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+
+# 对齐设置
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignTrailingComments: true
+AlignOperands: true
+
+# 其他设置
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+
+# 控制结构后的空格
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+SpacesInAngles: false
+SpacesInContainerLiterals: false
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# 注释设置
+ReflowComments: true
+
+# 预处理器设置
+IndentPPDirectives: None
+
+# 其他格式化选项
+DerivePointerAlignment: false
+ExperimentalAutoDetectBinPacking: false
+ForEachMacros:
+  - foreach
+  - Q_FOREACH
+  - BOOST_FOREACH
+MacroBlockBegin: ''
+MacroBlockEnd: ''
