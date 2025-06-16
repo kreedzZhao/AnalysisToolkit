@@ -15,7 +15,7 @@ target_include_directories(
 # dobby start
 target_include_directories(
   hook
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/dobby/include>)
+  PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/dobby/include>)
 target_include_directories(
   hook
   PRIVATE
@@ -43,4 +43,5 @@ add_subdirectory(external/Dobby dobby.build)
 # module_b) PUBLIC: 依赖 module_a 的目标也会隐式依赖 module_b PRIVATE: 只有 module_a 内部需要
 # module_b，外部不需要 INTERFACE: module_a 本身不直接使用 module_b，但依赖 module_a 的目标需要
 # module_b 具体取决于 module_a 如何使用 module_b 的接口或实现
-target_link_libraries(hook PUBLIC utility dobby)
+target_link_libraries(hook PUBLIC utility)
+target_link_libraries(hook PRIVATE $<BUILD_INTERFACE:dobby>)

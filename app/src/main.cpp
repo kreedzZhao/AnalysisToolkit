@@ -53,18 +53,15 @@ int main() {
 
     // 权限过滤
     MemoryPermissions perms;
-    perms.executable = true;
+    perms.executable = false;
     auto exec_regions = parser.findRegionsByPermissions(perms);
 
     // 自定义过滤
     parser.setRegionFilter([](const MemoryRegion& r) {
         return r.isAnonymous() && r.getSize() > 1024*1024;
     });
-    for (const auto& region : regions) {
-        ATKIT_INFO("region address: 0x%lx, size: %zu, permissions: %s, pathname: %s",
-                   region.getStartAddress(), region.getSize(),
-                   region.getPermissions().toString().c_str(),
-                   region.getPathname().c_str());
+    for (const auto& region : exec_regions.getValue()) {
+        ATKIT_INFO(region.toString());
     }
 
     return 0;

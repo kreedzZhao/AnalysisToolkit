@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "dobby.h"
 #include "utility/Logger.h"
 
 #ifdef __ANDROID__

@@ -2,7 +2,8 @@
 
 #include <dlfcn.h>
 
-#include <cstring>
+#include "dobby.h"
+#include "utility/Logger.h"
 
 namespace AnalysisToolkit {
 
