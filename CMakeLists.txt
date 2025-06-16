@@ -13,6 +13,8 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # 选项：是否构建测试
 option(BUILD_TESTS "Build the tests" ON)
+# 选项：是否构建示例程序
+option(BUILD_EXAMPLES "Build the examples" ON)
 
 # executable app
 add_subdirectory(app)
@@ -24,4 +26,9 @@ add_subdirectory(modules/utility)
 if(BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
+endif()
+
+# 添加示例程序
+if(BUILD_EXAMPLES)
+  add_subdirectory(examples)
 endif()

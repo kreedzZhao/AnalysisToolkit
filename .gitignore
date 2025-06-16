@@ -40,3 +40,6 @@ Thumbs.db
 
 # Pre-commit cache
 .pre-commit-config.yaml.backup
+
+# ai samples
+samples/

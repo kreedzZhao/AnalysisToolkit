@@ -23,7 +23,11 @@ if(NOT GTest_FOUND)
 endif()
 
 # 添加测试可执行文件
-add_executable(run_tests hook/test_inline_hook.cpp hook/test_utils.cpp)
+add_executable(run_tests 
+    hook/test_inline_hook.cpp 
+    hook/test_utils.cpp
+    utility/test_process_memory_parser.cpp
+)
 
 # 链接库
 target_link_libraries(run_tests PRIVATE gtest_main gtest hook utility)
@@ -35,7 +39,10 @@ target_include_directories(
           ${CMAKE_SOURCE_DIR}/modules/utility/include)
 
 # 添加编译选项
-target_compile_options(run_tests PRIVATE -Wall -Wextra)
+target_compile_options(
+  run_tests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wno-unused-parameter>
+                    $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wno-unused-parameter>
+                    $<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -Wno-unused-parameter>)
 
 # 注册测试
 include(GoogleTest)

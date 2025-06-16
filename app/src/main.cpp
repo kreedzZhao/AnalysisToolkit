@@ -1,4 +1,7 @@
 #include "hook/inline_hook.h"
+#include "utility/ProcessMemoryParser.h"
+
+using namespace AnalysisToolkit;
 
 void (*original_printf)(const char*, ...);
 void hooked_printf(const char* format, ...) {
@@ -11,7 +14,7 @@ void hooked_printf(const char* format, ...) {
 }
 
 int main() {
-    AnalysisToolkit::HookManager* hook_manager = AnalysisToolkit::HookManager::getInstance();
+    HookManager* hook_manager = HookManager::getInstance();
     if (hook_manager->initialize()) {
         ATKIT_INFO("HookManager initialized successfully");
     } else {
@@ -30,7 +33,7 @@ int main() {
                                                     reinterpret_cast<void*>(hooked_printf),
                                                     reinterpret_cast<void**>(&original_printf),
                                                     "printf_hook");
-    if (hook_function != AnalysisToolkit::HookStatus::SUCCESS) {
+    if (hook_function != HookStatus::SUCCESS) {
         ATKIT_ERROR("Failed to hook printf function");
         return -1;
     }
@@ -39,5 +42,30 @@ int main() {
     printf("nihao from prinf\n");
 
     hook_manager->cleanup();
+
+
+    // 基本使用
+    ProcessMemoryParser parser;
+    auto result = parser.parseSelf();
+
+    // 地址查找
+    auto regions = parser.findRegionsContaining(0x1000000);
+
+    // 权限过滤
+    MemoryPermissions perms;
+    perms.executable = true;
+    auto exec_regions = parser.findRegionsByPermissions(perms);
+
+    // 自定义过滤
+    parser.setRegionFilter([](const MemoryRegion& r) {
+        return r.isAnonymous() && r.getSize() > 1024*1024;
+    });
+    for (const auto& region : regions) {
+        ATKIT_INFO("region address: 0x%lx, size: %zu, permissions: %s, pathname: %s",
+                   region.getStartAddress(), region.getSize(),
+                   region.getPermissions().toString().c_str(),
+                   region.getPathname().c_str());
+    }
+
     return 0;
 }
