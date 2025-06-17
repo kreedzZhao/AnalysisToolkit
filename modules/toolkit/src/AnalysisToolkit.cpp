@@ -1,4 +1,4 @@
-#include "AnalysisToolkit/AnalysisToolkit.h"
+#include "toolkit/AnalysisToolkit.h"
 
 #include <atomic>
 
@@ -34,16 +34,6 @@ bool initialize(const Config& config) {
         logger->info("HookManager initialized successfully");
     }
 
-    // 初始化 Monitor
-    if (config.enable_jni_monitoring) {
-        Monitor* monitor = Monitor::getInstance();
-        if (!monitor->initialize()) {
-            logger->error("Failed to initialize Monitor");
-            return false;
-        }
-        logger->info("Monitor initialized successfully");
-    }
-
     g_initialized.store(true);
     logger->info("AnalysisToolkit initialized successfully");
     return true;
@@ -53,9 +43,6 @@ void cleanup() {
     if (g_initialized.load()) {
         auto* logger = Logger::getInstance();
         logger->info("AnalysisToolkit cleanup starting...");
-
-        // 清理 Monitor
-        Monitor::getInstance()->cleanup();
 
         // 清理 Hook 管理器
         HookManager::getInstance()->cleanup();
@@ -81,10 +68,6 @@ Logger* getLogger() {
 
 HookManager* getHookManager() {
     return HookManager::getInstance();
-}
-
-Monitor* getMonitor() {
-    return Monitor::getInstance();
 }
 
 }  // namespace AnalysisToolkit

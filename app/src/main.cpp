@@ -43,7 +43,6 @@ int main() {
 
     hook_manager->cleanup();
 
-
     // 基本使用
     ProcessMemoryParser parser;
     auto result = parser.parseSelf();
@@ -57,9 +56,8 @@ int main() {
     auto exec_regions = parser.findRegionsByPermissions(perms);
 
     // 自定义过滤
-    parser.setRegionFilter([](const MemoryRegion& r) {
-        return r.isAnonymous() && r.getSize() > 1024*1024;
-    });
+    parser.setRegionFilter(
+        [](const MemoryRegion& r) { return r.isAnonymous() && r.getSize() > 1024 * 1024; });
     for (const auto& region : exec_regions.getValue()) {
         ATKIT_INFO(region.toString());
     }

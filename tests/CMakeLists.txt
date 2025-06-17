@@ -23,26 +23,33 @@ if(NOT GTest_FOUND)
 endif()
 
 # 添加测试可执行文件
-add_executable(run_tests 
-    hook/test_inline_hook.cpp 
-    hook/test_utils.cpp
-    utility/test_process_memory_parser.cpp
-)
+add_executable(
+  run_tests
+  hook/test_inline_hook.cpp hook/test_utils.cpp
+  utility/test_process_memory_parser.cpp toolkit/test_analysis_tool_kit.cpp)
 
 # 链接库
-target_link_libraries(run_tests PRIVATE gtest_main gtest hook utility)
+target_link_libraries(run_tests PRIVATE gtest_main gtest hook utility toolkit)
 
 # 包含头文件目录
 target_include_directories(
   run_tests
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/modules/hook/include
-          ${CMAKE_SOURCE_DIR}/modules/utility/include)
+          ${CMAKE_SOURCE_DIR}/modules/utility/include
+          ${CMAKE_SOURCE_DIR}/modules/toolkit/include)
 
 # 添加编译选项
 target_compile_options(
-  run_tests PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wno-unused-parameter>
-                    $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -Wno-unused-parameter>
-                    $<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -Wno-unused-parameter>)
+  run_tests
+  PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall
+          -Wextra
+          -Wno-unused-parameter>
+          $<$<CXX_COMPILER_ID:Clang>:-Wall
+          -Wextra
+          -Wno-unused-parameter>
+          $<$<CXX_COMPILER_ID:AppleClang>:-Wall
+          -Wextra
+          -Wno-unused-parameter>)
 
 # 注册测试
 include(GoogleTest)
