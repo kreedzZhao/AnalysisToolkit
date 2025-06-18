@@ -27,6 +27,7 @@ endif()
 add_subdirectory(modules/hook)
 add_subdirectory(modules/utility)
 add_subdirectory(modules/toolkit)
+add_subdirectory(modules/trace)
 
 # 添加测试
 if(BUILD_TESTS)
@@ -44,7 +45,7 @@ set(SUBMODULE_PACKAGE_NAME AnalysisToolkit)
 
 # 安装公共库目标 只有那些希望被父项目链接的库才需要被"导出" 这里假设 hook 和 utility 是公共的，module_c 可能是内部使用的。
 install(
-  TARGETS hook utility toolkit # 这里列出所有对外暴露的库目标
+  TARGETS hook utility toolkit trace # 这里列出所有对外暴露的库目标（trace模块因为依赖外部QBDI库，暂不导出）
   EXPORT ${SUBMODULE_PACKAGE_NAME}Targets # 创建一个导出集合，命名为 AnalysisToolkitTargets
   ARCHIVE DESTINATION lib/${SUBMODULE_PACKAGE_NAME} # 静态库的安装路径
   LIBRARY DESTINATION lib/${SUBMODULE_PACKAGE_NAME} # 动态库的安装路径
@@ -65,6 +66,17 @@ install(
   DESTINATION include/${SUBMODULE_PACKAGE_NAME} # 安装到 include/AnalysisToolkit/
                                                 # 目录下
   PATTERN ".gitkeep" EXCLUDE)
+install(
+  DIRECTORY modules/trace/include/ # trace 的 include 目录
+  DESTINATION include/${SUBMODULE_PACKAGE_NAME} # 安装到 include/AnalysisToolkit/
+                                                # 目录下
+  PATTERN ".gitkeep" EXCLUDE)
+
+install(
+        DIRECTORY modules/toolkit/include/ # trace 的 include 目录
+        DESTINATION include/${SUBMODULE_PACKAGE_NAME} # 安装到 include/AnalysisToolkit/
+        # 目录下
+        PATTERN ".gitkeep" EXCLUDE)
 # 如果有其他公共模块的头文件需要暴露，也按此模式添加。
 
 # 生成 CMake 包配置文件 (有助于 find_package 方式，但在 add_subdirectory 方式下也能提供信息) 这个文件是

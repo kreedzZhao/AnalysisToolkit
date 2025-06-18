@@ -1,3 +1,6 @@
 [submodule "modules/hook/external/Dobby"]
 	path = modules/hook/external/Dobby
 	url = https://github.com/LSPosed/Dobby.git
+[submodule "modules/trace/external/QBDI"]
+	path = modules/trace/external/QBDI
+	url = https://github.com/QBDI/QBDI.git
