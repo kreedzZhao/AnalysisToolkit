@@ -74,38 +74,44 @@ message(STATUS "QBDI configured for minimal C/C++ only build")
 # 添加 QBDI 外部依赖
 add_subdirectory(external/QBDI)
 
-# 添加静态库，包含所有源文件
-add_library(trace STATIC src/qbdi.cpp)
+# 创建一个内部的实现库，包含 QBDI 依赖
+add_library(trace_impl STATIC src/qbdi.cpp)
 
 # 设置 C++ 标准（QBDI 需要 C++17 或更高）
-target_compile_features(trace PUBLIC cxx_std_17)
+target_compile_features(trace_impl PUBLIC cxx_std_17)
 
-# 设置公共头文件目录 PUBLIC 意味着依赖此库的任何目标都会继承此 include 路径
+# 设置私有头文件目录
 target_include_directories(
-  trace
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # 在构建时使用相对路径
+  trace_impl PRIVATE 
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
-# 设置私有头文件目录 PRIVATE 意味着只有 module 内部的源文件才能使用此 include 路径
-target_include_directories(
-  trace PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>)
-
-# 链接依赖库
-target_link_libraries(trace PUBLIC utility)
-
-# 链接 QBDI 使用 PRIVATE 链接而不是 PUBLIC，避免导出依赖冲突
-if(TARGET QBDI::QBDI_static)
-  target_link_libraries(trace PRIVATE QBDI::QBDI_static)
-  message(STATUS "Linking trace module with QBDI static library")
-elseif(TARGET QBDI::QBDI)
-  target_link_libraries(trace PRIVATE QBDI::QBDI)
-  message(STATUS "Linking trace module with QBDI shared library")
+# 链接 QBDI 到实现库
+if(TARGET QBDI_static)
+  target_link_libraries(trace_impl PRIVATE QBDI_static)
+  message(STATUS "Linking trace implementation with QBDI static library")
+elseif(TARGET QBDI)
+  target_link_libraries(trace_impl PRIVATE QBDI)
+  message(STATUS "Linking trace implementation with QBDI shared library")
 else()
   message(FATAL_ERROR "QBDI library not found")
 endif()
 
-# 添加 QBDI 头文件目录
+# 创建公共的 trace 库，不直接依赖 QBDI
+add_library(trace INTERFACE)
+
+# 设置公共头文件目录
 target_include_directories(
   trace
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
+# 链接依赖库
+target_link_libraries(trace INTERFACE utility trace_impl)
+
+# 添加 QBDI 头文件目录到实现库
+target_include_directories(
+  trace_impl
   PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/QBDI/include>
           $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/external/QBDI/include>)

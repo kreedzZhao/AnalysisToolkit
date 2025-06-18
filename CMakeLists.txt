@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.20.5)
 
 project(
   AnalysisToolkit
@@ -45,11 +45,18 @@ set(SUBMODULE_PACKAGE_NAME AnalysisToolkit)
 
 # 安装公共库目标 只有那些希望被父项目链接的库才需要被"导出" 这里假设 hook 和 utility 是公共的，module_c 可能是内部使用的。
 install(
-  TARGETS hook utility toolkit trace # 这里列出所有对外暴露的库目标（trace模块因为依赖外部QBDI库，暂不导出）
+  TARGETS hook utility toolkit # 暂时移除 trace，因为它的依赖链中包含 QBDI 导出冲突
   EXPORT ${SUBMODULE_PACKAGE_NAME}Targets # 创建一个导出集合，命名为 AnalysisToolkitTargets
   ARCHIVE DESTINATION lib/${SUBMODULE_PACKAGE_NAME} # 静态库的安装路径
   LIBRARY DESTINATION lib/${SUBMODULE_PACKAGE_NAME} # 动态库的安装路径
           # RUNTIME DESTINATION bin/${SUBMODULE_PACKAGE_NAME} # 如果子模块有可执行文件（不常见）
+)
+
+# 单独安装 trace 库，但不导出到目标集合中
+install(
+  TARGETS trace trace_impl
+  ARCHIVE DESTINATION lib/${SUBMODULE_PACKAGE_NAME}
+  LIBRARY DESTINATION lib/${SUBMODULE_PACKAGE_NAME}
 )
 
 # 安装公共头文件 这确保父项目在链接子模块后，能够找到相应的头文件。 我们将公共头文件安装到
